@@ -1,0 +1,64 @@
+version: '2'
+image_name: ollama
+apis:
+  - agents
+  - inference
+  - safety
+  - telemetry
+  - tool_runtime
+  - vector_io
+providers:
+  inference:
+    - provider_id: ollama
+      provider_type: remote::ollama
+      config:
+        url: http://localhost:11434
+  vector_io:
+    - provider_id: milvus
+      provider_type: remote::milvus
+      config:
+        uri: http://localhost:19530
+        token: root:Milvus
+  safety:
+    - provider_id: llama-guard
+      provider_type: inline::llama-guard
+      config:
+        excluded_categories: []
+  agents:
+    - provider_id: meta-reference
+      provider_type: inline::meta-reference
+      config:
+        persistence_store:
+          type: sqlite
+          db_path: ${env.SQLITE_STORE_DIR:~/.llama/distributions/ollama}/agents_store.db
+        responses_store:
+          type: sqlite
+          db_path: ${env.SQLITE_STORE_DIR:~/.llama/distributions/ollama}/responses_store.db
+  telemetry:
+    - provider_id: meta-reference
+      provider_type: inline::meta-reference
+      config:
+        service_name: ${env.OTEL_SERVICE_NAME:}
+        sinks: ${env.TELEMETRY_SINKS:console,sqlite}
+        sqlite_db_path: ${env.SQLITE_STORE_DIR:~/.llama/distributions/ollama}/trace_store.db
+  tool_runtime:
+    - provider_id: rag-runtime
+      provider_type: inline::rag-runtime
+      config: {}
+models:
+- metadata: {}
+  model_id: ollama/llama3.2:3b-instruct-fp16
+  provider_id: ollama
+  provider_model_id: llama3.2:3b-instruct-fp16
+  model_type: llm
+- metadata:
+    embedding_dimension: 384
+  model_id: ollama/all-minilm:latest
+  provider_id: ollama
+  provider_model_id: all-minilm:latest
+  model_type: embedding
+tool_groups:
+  - toolgroup_id: builtin::rag
+    provider_id: rag-runtime
+server:
+  port: 8321
