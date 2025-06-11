@@ -56,7 +56,7 @@ class DocumentService:
         input_paths = [Path(p) for p in file_paths if Path(p).exists()]
 
         if not input_paths:
-            print("⚠️ Warning: No valid file paths were provided or files do not exist.")
+            print("Warning: No valid file paths were provided or files do not exist.")
             return []
 
         print(f"-> Processing batch of {len(input_paths)} files with Docling...")
@@ -79,18 +79,18 @@ class DocumentService:
                         )
                     else:
                         print(
-                            f"⚠️ Warning: No text content was extracted from {res.input.file.name}."
+                            f"Warning: No text content was extracted from {res.input.file.name}."
                         )
                 else:
                     print(
-                        f"⚠️ Warning: Conversion failed or produced no document for {res.input.file.name}."
+                        f"Warning: Conversion failed or produced no document for {res.input.file.name}."
                     )
 
         except Exception as e:
-            print(f"❌ An error occurred during Docling batch conversion: {e}")
+            print(f"An error occurred during Docling batch conversion: {e}")
 
         print(
-            f"📄 Successfully loaded and processed a total of {len(documents)} document(s)."
+            f"Successfully loaded and processed a total of {len(documents)} document(s)."
         )
         return documents
 

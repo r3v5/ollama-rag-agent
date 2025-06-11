@@ -16,7 +16,7 @@ class LlamaStackClientSingleton:
         Initializes it on the first call using settings from AppConfig.
         """
         if cls._instance is None:
-            print("✨ Creating new LlamaStackClient instance (Singleton)...")
+            print("Creating new LlamaStackClient instance (Singleton)...")
             config = AppConfig()
             cls._instance = LlamaStackClient(base_url=config.get_base_url())
         return cls._instance
