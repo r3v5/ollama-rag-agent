@@ -1,2 +1,4 @@
 /volumes
 /venv
+/None
+/.env.dev
