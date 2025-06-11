@@ -1,11 +1,9 @@
-# main.py
-
 import traceback
 
-# ADDED: To load the .env.dev file
+
 from dotenv import load_dotenv
 
-# CORRECTED IMPORTS: Import from the 'app' package
+
 from app.app_config import AppConfig
 from app.document_service import DocumentService
 from app.rag_agent_manager import RAGAgentManager
