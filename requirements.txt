@@ -12,3 +12,4 @@ ollama
 mcp
 sqlalchemy
 greenlet
+docling
