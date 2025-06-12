@@ -13,3 +13,4 @@ mcp
 sqlalchemy
 greenlet
 docling
+tesserocr

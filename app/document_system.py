@@ -10,14 +10,19 @@ from docling.document_converter import DocumentConverter
 from docling.document_converter import (
     DocumentConverter,
     PdfFormatOption,
-    WordFormatOption,
+    ImageFormatOption,
 )
-from docling.pipeline.simple_pipeline import SimplePipeline
-from docling.pipeline.standard_pdf_pipeline import StandardPdfPipeline
-from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
 
 
-class DocumentService:
+from docling.backend.pypdfium2_backend import (
+    PyPdfiumDocumentBackend,
+)
+
+from docling.datamodel.pipeline_options import OcrOptions
+from docling.datamodel.pipeline_options import PdfPipelineOptions
+
+
+class DocumentSystem:
     """
     Handles loading documents from various sources, using a customized
     docling DocumentConverter based on the official examples.
@@ -29,21 +34,25 @@ class DocumentService:
         """
         print("Initializing DocumentService with custom multi-format converter...")
 
+        ocr_opts = OcrOptions(engine="tesseract", lang=["eng"])
+        pdf_pipeline_options = PdfPipelineOptions()
+        pdf_pipeline_options.do_ocr = True
+        pdf_pipeline_options.do_table_structure = True
+        pdf_pipeline_options.table_structure_options.do_cell_matching = True
+
+        # This setup now correctly configures a pipeline for each file type.
         self._docling_converter = DocumentConverter(
             allowed_formats=[
                 InputFormat.PDF,
                 InputFormat.IMAGE,
-                InputFormat.DOCX,
-                InputFormat.HTML,
-                InputFormat.PPTX,
-                InputFormat.ASCIIDOC,
-                InputFormat.MD,
             ],
             format_options={
                 InputFormat.PDF: PdfFormatOption(
-                    pipeline_cls=StandardPdfPipeline, backend=PyPdfiumDocumentBackend
+                    pipeline_options=pdf_pipeline_options,
+                    backend=PyPdfiumDocumentBackend,
+                    ocr=ocr_opts,
                 ),
-                InputFormat.DOCX: WordFormatOption(pipeline_cls=SimplePipeline),
+                InputFormat.IMAGE: ImageFormatOption(ocr=ocr_opts),
             },
         )
 
@@ -56,7 +65,7 @@ class DocumentService:
         input_paths = [Path(p) for p in file_paths if Path(p).exists()]
 
         if not input_paths:
-            print("Warning: No valid file paths were provided or files do not exist.")
+            print("⚠️ Warning: No valid file paths were provided or files do not exist.")
             return []
 
         print(f"-> Processing batch of {len(input_paths)} files with Docling...")
@@ -66,6 +75,7 @@ class DocumentService:
             for res in conv_results:
                 if res.document:
                     print(f"   - Successfully converted: {res.input.file.name}")
+                    # Extract and pre-process text for better RAG performance
                     content = res.document.export_to_text().replace("\n", " ").strip()
 
                     if content:
@@ -79,18 +89,18 @@ class DocumentService:
                         )
                     else:
                         print(
-                            f"Warning: No text content was extracted from {res.input.file.name}."
+                            f"⚠️ Warning: No text content was extracted from {res.input.file.name}."
                         )
                 else:
                     print(
-                        f"Warning: Conversion failed or produced no document for {res.input.file.name}."
+                        f"⚠️ Warning: Conversion failed or produced no document for {res.input.file.name}."
                     )
 
         except Exception as e:
-            print(f"An error occurred during Docling batch conversion: {e}")
+            print(f"❌ An error occurred during Docling batch conversion: {e}")
 
         print(
-            f"Successfully loaded and processed a total of {len(documents)} document(s)."
+            f"📄 Successfully loaded and processed a total of {len(documents)} document(s)."
         )
         return documents
 

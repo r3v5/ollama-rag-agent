@@ -2,8 +2,8 @@ import traceback
 import sys
 from dotenv import load_dotenv
 
-from app.app_config import AppConfig
-from app.document_service import DocumentService
+from app.rag_server_config import RAGServerConfig
+from app.document_system import DocumentSystem
 from app.rag_agent_manager import RAGAgentManager
 from app.vectordb.vector_db_manager import VectorDBManager
 
@@ -12,10 +12,10 @@ def main():
     """Orchestrates the interactive RAG application setup and execution."""
     try:
         # --- Initialization ---
-        config = AppConfig()
-        doc_service = DocumentService()
-        vector_db_manager = VectorDBManager(config)
-        agent_manager = RAGAgentManager(config)
+        rag_server_config = RAGServerConfig()
+        doc_sys = DocumentSystem()
+        vector_db_manager = VectorDBManager(rag_server_config)
+        agent_manager = RAGAgentManager(rag_server_config)
 
         # --- Interactive Document Input ---
         print("--- Real-time RAG Document Loader (with Docling) ---")
@@ -35,7 +35,7 @@ def main():
             file_paths = [path.strip() for path in paths_input.split(",")]
 
             # The DocumentService now processes the whole list in a batch
-            documents = doc_service.load_from_local_files(file_paths)
+            documents = doc_sys.load_from_local_files(file_paths)
 
         elif choice == "2":
             print(
@@ -43,14 +43,14 @@ def main():
             )
             content = sys.stdin.read()
             if content:
-                documents.append(doc_service.create_document_from_text(content))
+                documents.append(doc_sys.create_document_from_text(content))
                 print("📄 Text received.")
         else:
-            print("❌ Invalid choice. Exiting.")
+            print("Invalid choice. Exiting.")
             return
 
         if not documents:
-            print("❌ No documents were loaded. Exiting.")
+            print("No documents were loaded. Exiting.")
             return
 
         vector_db_id = vector_db_manager.setup_and_insert(documents)

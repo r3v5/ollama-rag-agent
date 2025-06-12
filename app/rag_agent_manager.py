@@ -1,5 +1,5 @@
 from typing import Optional, Tuple
-from app.app_config import AppConfig
+from app.rag_server_config import RAGServerConfig
 from app.llama_stack_client_singleton import LlamaStackClientSingleton
 from llama_stack_client.lib.agents.agent import Agent
 from llama_stack_client.types.agent_create_params import AgentConfig
@@ -8,9 +8,9 @@ from llama_stack_client.types.agent_create_params import AgentConfig
 class RAGAgentManager:
     """Manages the creation, session, and querying of the RAG agent."""
 
-    def __init__(self, config: AppConfig):
-        self.client = LlamaStackClientSingleton.get_instance()
-        self.config = config
+    def __init__(self, rag_server_config: RAGServerConfig):
+        self.llamastack_client = LlamaStackClientSingleton.get_instance()
+        self.rag_server_config = rag_server_config
         self.rag_agent = None
         self.session_id = None
 
@@ -18,7 +18,7 @@ class RAGAgentManager:
         """Creates the RAG agent with a specified vector DB."""
 
         agent_config = AgentConfig(
-            model=self.config.get_inference_model(),
+            model=self.rag_server_config.get_inference_model(),
             instructions=agent_instructions,
             enable_session_persistence=False,
             toolgroups=[
@@ -26,13 +26,13 @@ class RAGAgentManager:
                     "name": "builtin::rag",
                     "args": {
                         "vector_db_ids": [vector_db_id],
-                        "top_k": self.config.get_rag_top_k(),
+                        "top_k": self.rag_server_config.get_rag_top_k(),
                         "similarity_threshold": 0.0,
                     },
                 }
             ],
         )
-        self.rag_agent = Agent(self.client, agent_config)
+        self.rag_agent = Agent(self.llamastack_client, agent_config)
         self.session_id = self.rag_agent.create_session("matias-rag-session")
         print(":white_check_mark: Agent initialized.")
         print(f":books: Using vector DB: {vector_db_id}")
