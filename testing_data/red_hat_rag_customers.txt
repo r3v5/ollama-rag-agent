@@ -1,0 +1,24 @@
+Clarifying Target Audience and User Roles
+This document clarifies the target audience and user roles for our project, focusing on the distinction between end-users and builders.
+End Users vs. Builders:
+
+End Users: Consume the final product (e.g., interact with a ChatGPT-like application).
+Builders: Create and configure the AI systems used by end-users (e.g., configure a RAG backend, tweaking parameters for a specific experience such as ChatGPT).  We are targeting builders, not end-users. Builders optimize their systems for their specific end-users.
+
+Builder Archetypes:
+
+High-Coder Builders (aka pro-code): Prefer SDKs and code-based solutions. They need access to all configurable parameters via APIs and SDKs.  They may also want a quick way to "vibe check" their RAG system via a UI (e.g., llama-stack-cli my-rag-app.py --web).
+
+Low-Coder Builders (no/low-code): Prefer UI-driven workflows and visual tools to configure their systems.  They could benefit from tools like the existing llama-stack playground.
+
+Builders vs. Platformers vs. Opsers:
+
+Builders (AI Engineers/AI Devs): Use the platform and its primitives to build AI systems.  Their skillset and the complexity of their tasks determine whether they are considered AI Engineers or AI Devs.
+
+Platformers (AI Platform Engineers): Platformers focus on building, maintaining, and securing the AI platform and APIs. They serve both Builders (for development) and Opsers (for deployment/operations), ensuring infrastructure is reliable, scalable, and supports self-service.
+
+Opsers (AI/MLOps Engineers): Opsers focus on operationalizing and automating the AI/ML  lifecycle. For example, they use platform APIs to deploy, monitor, and manage models, enabling Builders' models to reach and succeed in production. Opsers work closely with Platformers to ensure infrastructure meets operational needs.
+
+In summary:
+
+Platformers enable builders, and builders create systems for end-users.  Our focus is on empowering builders with the tools and flexibility they need to build the best experiences for their end-users.

@@ -7,39 +7,39 @@ class RAGServerConfig:
 
     def __init__(self) -> None:
         """Initializes the configuration properties."""
-        self.__LLAMA_STACK_PORT = os.environ.get("LLAMA_STACK_PORT")
-        self.__INFERENCE_MODEL = os.environ.get("INFERENCE_MODEL")
-        self.__EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL")
-        self.__EMBEDDING_DIM = os.environ.get("EMBEDDING_DIM")
-        self.__VECTOR_DB_PROVIDER = os.environ.get("VECTOR_DB_PROVIDER")
-        self.__CHUNK_SIZE_IN_TOKENS = os.environ.get("CHUNK_SIZE_IN_TOKENS")
-        self.__RAG_TOP_K = os.environ.get("RAG_TOP_K")
-        self.__VECTOR_DB_NAME = os.environ.get("VECTOR_DB_NAME")
+        self.LLAMA_STACK_PORT = os.environ.get("LLAMA_STACK_PORT")
+        self.INFERENCE_MODEL = os.environ.get("INFERENCE_MODEL")
+        self.EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL")
+        self.EMBEDDING_DIM = os.environ.get("EMBEDDING_DIM")
+        self.VECTOR_DB_PROVIDER = os.environ.get("VECTOR_DB_PROVIDER")
+        self.CHUNK_SIZE_IN_TOKENS = os.environ.get("CHUNK_SIZE_IN_TOKENS")
+        self.RAG_TOP_K = os.environ.get("RAG_TOP_K")
+        self.VECTOR_DB_NAME = os.environ.get("VECTOR_DB_NAME")
 
     def get_llama_stack_port(self) -> int:
-        return int(self.__LLAMA_STACK_PORT) if self.__LLAMA_STACK_PORT else 8321
+        return int(self.LLAMA_STACK_PORT) if self.LLAMA_STACK_PORT else 8321
 
     def get_inference_model(self) -> str:
-        return self.__INFERENCE_MODEL or "ollama/llama3.2:3b-instruct-fp16"
+        return self.INFERENCE_MODEL or "ollama/llama3.2:3b-instruct-fp16"
 
     def get_embedding_model(self) -> str:
-        return self.__EMBEDDING_MODEL or "ollama/all-minilm:latest"
+        return self.EMBEDDING_MODEL or "ollama/all-minilm:latest"
 
     def get_embedding_dim(self) -> int:
-        return int(self.__EMBEDDING_DIM) if self.__EMBEDDING_DIM else 384
+        return int(self.EMBEDDING_DIM) if self.EMBEDDING_DIM else 384
 
     def get_vector_db_provider(self) -> str:
-        return self.__VECTOR_DB_PROVIDER or "milvus"
+        return self.VECTOR_DB_PROVIDER or "milvus"
 
     def get_chunk_size_in_tokens(self) -> int:
-        return int(self.__CHUNK_SIZE_IN_TOKENS) if self.__CHUNK_SIZE_IN_TOKENS else 256
+        return int(self.CHUNK_SIZE_IN_TOKENS) if self.CHUNK_SIZE_IN_TOKENS else 256
 
     def get_rag_top_k(self) -> int:
-        return int(self.__RAG_TOP_K) if self.__RAG_TOP_K else 3
+        return int(self.RAG_TOP_K) if self.RAG_TOP_K else 3
 
     def get_vector_db_name(self) -> str:
-        if self.__VECTOR_DB_NAME:
-            return self.__VECTOR_DB_NAME
+        if self.VECTOR_DB_NAME:
+            return self.VECTOR_DB_NAME
         else:
             # If not set, generate a unique default name to avoid collisions
             return f"rag-db-{uuid.uuid4().hex}"

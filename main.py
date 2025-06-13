@@ -2,6 +2,7 @@ import traceback
 import sys
 from dotenv import load_dotenv
 
+
 from app.rag_server_config import RAGServerConfig
 from app.document_system import DocumentSystem
 from app.rag_agent_manager import RAGAgentManager
@@ -9,56 +10,43 @@ from app.vectordb.vector_db_manager import VectorDBManager
 
 
 def main():
-    """Orchestrates the interactive RAG application setup and execution."""
+    """Orchestrates a RAG session for a single document."""
     try:
-        # --- Initialization ---
+        # --- One-Time Initialization ---
         rag_server_config = RAGServerConfig()
         doc_sys = DocumentSystem()
         vector_db_manager = VectorDBManager(rag_server_config)
         agent_manager = RAGAgentManager(rag_server_config)
+        document = None
 
-        # --- Interactive Document Input ---
-        print("--- Real-time RAG Document Loader (with Docling) ---")
-        print("How would you like to provide the document(s)?")
+        # --- Single Document Input ---
+        print("--- RAG Document Loader ---")
+        print("Please provide a single document to start a session.")
 
-        choice = input(
-            "Enter '1' to provide file path(s) (pdf, docx, png, txt), or '2' to paste text directly: "
+        file_path = input(
+            "Please enter the full path to your file (pdf, png, jpg, txt): "
         ).strip()
 
-        documents = []
-        if choice == "1":
-            # ENHANCED: Now accepts one or more comma-separated paths
-            paths_input = input(
-                "Please enter the full path to your file(s), separated by commas: "
-            ).strip()
-            # Create a list by splitting the input string and stripping whitespace from each path
-            file_paths = [path.strip() for path in paths_input.split(",")]
-
-            # The DocumentService now processes the whole list in a batch
-            documents = doc_sys.load_from_local_files(file_paths)
-
-        elif choice == "2":
-            print(
-                "Please paste your text below. Press Ctrl+D (Linux/macOS) or Ctrl+Z then Enter (Windows) when done."
-            )
-            content = sys.stdin.read()
-            if content:
-                documents.append(doc_sys.create_document_from_text(content))
-                print("📄 Text received.")
+        if file_path:
+            # The updated load_file method now returns a single document or None
+            document = doc_sys.load_file(file_path)
         else:
-            print("Invalid choice. Exiting.")
+            print("❌ No path entered. Exiting.")
             return
 
-        if not documents:
-            print("No documents were loaded. Exiting.")
+        # The logic now checks for a single document object
+        if not document:
+            print("❌ No document was loaded. Exiting.")
             return
 
-        vector_db_id = vector_db_manager.setup_and_insert(documents)
+        # --- Setup RAG with the single document ---
+        # The setup_and_insert method expects a list, so we wrap the document in one.
+        vector_db_id = vector_db_manager.setup_and_insert([document])
         agent_instructions = "You are a helpful assistant that answers questions based only on the document provided."
         agent_manager.initialize_agent(vector_db_id, agent_instructions)
 
         # --- Interactive Q&A Loop ---
-        print("\n--- Query Your Document(s) ---")
+        print("\n--- Query Your Document ---")
         while True:
             user_prompt = input("\nAsk a question (or type 'quit' to exit): ").strip()
             if user_prompt.lower() == "quit":

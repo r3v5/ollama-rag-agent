@@ -1,0 +1,33 @@
+What is retrieval-augmented generation?
+Retrieval-augmented generation (RAG) is a technique used to improve the output of large language models (LLMs) by connecting them to external knowledge sources. This allows the LLM to provide more accurate, up-to-date, and contextually relevant answers.
+
+How does RAG work?
+The RAG process can be broken down into three main stages: data preparation, retrieval, and generation.
+
+1. Data Preparation
+Before an LLM can use external data, that data needs to be prepared. This involves several steps:
+
+Source and load documentation: The first step is to identify and gather the external documents you want the LLM to have access to. These can be in various formats like text files, PDFs, or database tables. Regardless of the original format, the data needs to be converted into plain text. This process is often referred to as ETL (Extract, Transform, Load).
+
+Transform: The text is then broken down into smaller, manageable "chunks." This process, known as text splitting or chunking, helps the model to more easily search and retrieve relevant information. Chunking can be done based on paragraphs, sentences, or other logical divisions within the text.
+
+Embed: The text chunks are then converted into numerical representations called vector embeddings using a specialized machine learning model. These embeddings capture the semantic meaning of the text, allowing the system to understand the relationships between different pieces of information.
+
+Store: These vector embeddings are stored in a specialized database called a vector database. This database is optimized for searching and retrieving information based on the similarity of the vector embeddings.
+
+2. Retrieval
+When a user enters a query, the RAG system retrieves the most relevant information from the vector database.
+
+The user's query is first converted into a vector embedding using the same model that was used to embed the external documents.
+The system then searches the vector database for the chunks of text whose embeddings are most similar to the query's embedding.
+This retrieved data is then passed to the large language model along with the original user prompt.
+3. Generation
+Finally, the LLM uses the retrieved information, in conjunction with its own pre-existing knowledge, to generate a comprehensive and accurate answer to the user's query. The retrieved text provides context and specific details that the LLM might not have had in its original training data.
+
+Benefits of RAG
+Using a retrieval-augmented generation approach offers several advantages:
+
+Improved Accuracy: By grounding the LLM's responses in external, verifiable knowledge sources, RAG helps to reduce the chances of the model generating incorrect or "hallucinated" information.
+Access to Current Information: LLMs are trained on a fixed dataset and do not have access to real-time information. RAG allows them to access the most up-to-date information available in the external knowledge sources.
+Increased Trust and Transparency: Because the RAG system can often cite the sources of the information it used to generate an answer, users can have more confidence in the output and can verify the information for themselves.
+Domain-Specific Knowledge: RAG enables LLMs to be used in specialized domains by providing them with access to relevant jargon, technical documents, and internal knowledge bases.
