@@ -9,21 +9,17 @@ class LlamaStackClientSingleton:
     # private attribute of LlamaStackClient instance
     __instance = None
 
-    def __new__(cls):
-        raise RuntimeError("Call get_instance")
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_instance(cls) -> LlamaStackClient:
+    @staticmethod
+    def get_instance() -> LlamaStackClient:
         """
         Returns the singleton instance of the LlamaStackClient.
         Initializes it on the first call using settings from RAGServerConfig.
         """
-        if not cls.__instance:
+        if not LlamaStackClientSingleton.__instance:
             print("Creating new LlamaStackClient instance (Singleton)...")
             rag_server_config = RAGServerConfig()
-            cls.__instance = LlamaStackClient(base_url=rag_server_config.get_base_url())
+            LlamaStackClientSingleton.__instance = LlamaStackClient(
+                base_url=rag_server_config.get_base_url()
+            )
 
-        return cls.__instance
+        return LlamaStackClientSingleton.__instance

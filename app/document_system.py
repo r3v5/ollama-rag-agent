@@ -2,7 +2,6 @@ import uuid
 from pathlib import Path
 import base64
 import requests
-from typing import Optional
 from llama_stack_client.types import Document
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter
