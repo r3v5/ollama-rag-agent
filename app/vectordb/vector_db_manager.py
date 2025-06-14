@@ -20,21 +20,7 @@ class VectorDBManager:
         self.__vector_db_id = new_vector_db_id
 
     def setup_and_insert(self, document: List[Document]) -> str:
-        """
-        Ensures a vector DB is registered and inserts a single document into it.
-
-        This method creates a new, unique database for each session.
-
-        Args:
-            document: A single Document object to insert into the vector DB.
-
-        Returns:
-            The ID of the vector database used for the operation.
-
-        Raises:
-            RuntimeError: If there is a failure communicating with the LlamaStack server.
-            ValueError: If the provided document is invalid.
-        """
+        """Ensures a vector DB is registered and inserts a single document into it."""
         if not document:
             raise ValueError("A valid document must be provided for insertion.")
 
@@ -43,7 +29,7 @@ class VectorDBManager:
         db_name = self.rag_server_config.get_vector_db_name()
         self.set_vector_db_id(f"{db_name}-{uuid.uuid4().hex}")
 
-        print(f"\n:file_cabinet: Registering new vector DB: {self.get_vector_db_id()}")
+        print(f"\nRegistering new vector DB: {self.get_vector_db_id()}")
         try:
             self.llamastack_client.vector_dbs.register(
                 vector_db_id=self.get_vector_db_id(),
@@ -57,7 +43,7 @@ class VectorDBManager:
             ) from e
 
         # --- Document Insertion ---
-        print(f":inbox_tray: Inserting document into {self.get_vector_db_id()}...")
+        print(f"\nDB INSERTION: Inserting {len(document)} document into vector DB...")
         try:
 
             # The API client's insert method expects a list, so we wrap our single document.
@@ -66,7 +52,7 @@ class VectorDBManager:
                 vector_db_id=self.get_vector_db_id(),
                 chunk_size_in_tokens=self.rag_server_config.get_chunk_size_in_tokens(),
             )
-            print(f":page_facing_up: Insertion complete.")
+            print(f"Insertion is completed.")
         except Exception as e:
             raise RuntimeError(f"Failed to insert document. Original error: {e}") from e
 

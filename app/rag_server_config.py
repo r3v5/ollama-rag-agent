@@ -16,6 +16,13 @@ class RAGServerConfig:
         self.RAG_TOP_K = os.environ.get("RAG_TOP_K")
         self.VECTOR_DB_NAME = os.environ.get("VECTOR_DB_NAME")
 
+        # VLM (Visual Language Model) configuration
+        self.VLM_MODEL_NAME = os.environ.get("VLM_MODEL_NAME")
+        self.OLLAMA_API_URL_FOR_GENERATING = os.environ.get(
+            "OLLAMA_API_URL_FOR_GENERATING"
+        )
+        self.MIN_OCR_TEXT_LENGTH = os.environ.get("MIN_OCR_TEXT_LENGTH")
+
     def get_llama_stack_port(self) -> int:
         return int(self.LLAMA_STACK_PORT) if self.LLAMA_STACK_PORT else 8321
 
@@ -43,6 +50,15 @@ class RAGServerConfig:
         else:
             # If not set, generate a unique default name to avoid collisions
             return f"rag-db-{uuid.uuid4().hex}"
+
+    def get_vlm_model_name(self) -> str:
+        return self.VLM_MODEL_NAME
+
+    def get_ollama_api_url_for_generating(self) -> str:
+        return self.OLLAMA_API_URL_FOR_GENERATING
+
+    def get_min_ocr_text_length(self) -> int:
+        return int(self.MIN_OCR_TEXT_LENGTH)
 
     def get_base_url(self) -> str:
         """Constructs the base URL for the LlamaStack client."""

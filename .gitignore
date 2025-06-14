@@ -2,3 +2,4 @@
 /venv
 /None
 /.env.dev
+.DS_Store

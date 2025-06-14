@@ -1,7 +1,5 @@
 import traceback
-import sys
 from dotenv import load_dotenv
-
 
 from app.rag_server_config import RAGServerConfig
 from app.document_system import DocumentSystem
@@ -14,7 +12,7 @@ def main():
     try:
         # --- One-Time Initialization ---
         rag_server_config = RAGServerConfig()
-        doc_sys = DocumentSystem()
+        doc_sys = DocumentSystem(rag_server_config)
         vector_db_manager = VectorDBManager(rag_server_config)
         agent_manager = RAGAgentManager(rag_server_config)
         document = None
@@ -31,17 +29,18 @@ def main():
             # The updated load_file method now returns a single document or None
             document = doc_sys.load_file(file_path)
         else:
-            print("❌ No path entered. Exiting.")
+            print("No path entered. Exiting.")
             return
 
         # The logic now checks for a single document object
         if not document:
-            print("❌ No document was loaded. Exiting.")
+            print("No document was loaded. Exiting.")
             return
 
         # --- Setup RAG with the single document ---
         # The setup_and_insert method expects a list, so we wrap the document in one.
         vector_db_id = vector_db_manager.setup_and_insert([document])
+        # agent_instructions = "You are a helpful assistant that answers questions based only on the document provided. Use the RAG tool."
         agent_instructions = "You are a helpful assistant that answers questions based only on the document provided."
         agent_manager.initialize_agent(vector_db_id, agent_instructions)
 
@@ -59,19 +58,17 @@ def main():
             final_output, chunks_found = agent_manager.make_query(user_prompt)
 
             if final_output:
-                print("\n:brain: RAG Response:")
+                print("\nRAG Response:")
                 print(final_output)
             elif chunks_found:
                 print(
-                    "\n:warning: Chunks were retrieved but the model did not generate a response."
+                    "\nwarning: Chunks were retrieved but the model did not generate a response."
                 )
             else:
-                print(
-                    "\n:x: No relevant chunks were found in the document for your query."
-                )
+                print("\nNo relevant chunks were found in the document for your query.")
 
     except Exception as e:
-        print(f"\n:x: An unexpected error occurred: {str(e)}")
+        print(f"\nAn unexpected error occurred: {str(e)}")
         traceback.print_exc()
 
 

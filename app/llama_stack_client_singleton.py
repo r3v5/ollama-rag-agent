@@ -9,6 +9,12 @@ class LlamaStackClientSingleton:
     # private attribute of LlamaStackClient instance
     __instance = None
 
+    def __new__(cls):
+        raise RuntimeError("Call get_instance")
+
+    def __init__(self):
+        pass
+
     @classmethod
     def get_instance(cls) -> LlamaStackClient:
         """

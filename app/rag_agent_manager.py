@@ -34,8 +34,8 @@ class RAGAgentManager:
         )
         self.rag_agent = Agent(self.llamastack_client, agent_config)
         self.session_id = self.rag_agent.create_session("matias-rag-session")
-        print(":white_check_mark: Agent initialized.")
-        print(f":books: Using vector DB: {vector_db_id}")
+        print("Agent initialized.")
+        print(f"Using vector DB: {vector_db_id}")
 
     def make_query(self, user_prompt: str) -> Tuple[Optional[str], bool]:
         """Runs a query against the RAG agent and processes the response stream."""
