@@ -71,6 +71,10 @@ def main():
         print(f"\nAn unexpected error occurred: {str(e)}")
         traceback.print_exc()
 
+    finally:
+        print("👋 Goodbye! Shutting down and cleaning up resources...")
+        vector_db_manager.cleanup_vector_db()
+
 
 if __name__ == "__main__":
     print("Loading environment variables from .env.dev")

@@ -58,3 +58,22 @@ class VectorDBManager:
 
         # Return the active DB ID for the agent to use.
         return self.get_vector_db_id()
+
+    def cleanup_vector_db(self) -> None:
+        """Unregisters the vector DB created during the session."""
+        db_id = self.get_vector_db_id()
+        if not db_id:
+            print("No vector DB was created in this session, nothing to clean up.")
+            return
+
+        print(f"\nCleaning up: Unregistering vector DB '{db_id}'...")
+        try:
+            # Assuming the client has an 'unregister' or similar method
+            self.llamastack_client.vector_dbs.unregister(vector_db_id=db_id)
+            print(f"Successfully unregistered vector DB.")
+        except Exception as e:
+            # Log an error but don't crash the exit process
+            print(
+                f"Error: Failed to unregister vector DB '{db_id}'. "
+                f"You may need to clean it up manually. Original error: {e}"
+            )
