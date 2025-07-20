@@ -19,6 +19,9 @@ providers:
       config:
         uri: http://localhost:19530
         token: root:Milvus
+        kvstore:
+          type: sqlite
+          db_path: ${env.SQLITE_STORE_DIR:~/.llama/distributions/ollama}/milvus_kvstore.db
   safety:
     - provider_id: llama-guard
       provider_type: inline::llama-guard
@@ -39,7 +42,9 @@ providers:
       provider_type: inline::meta-reference
       config:
         service_name: ${env.OTEL_SERVICE_NAME:}
-        sinks: ${env.TELEMETRY_SINKS:console,sqlite}
+        sinks: 
+          - console
+          - sqlite
         sqlite_db_path: ${env.SQLITE_STORE_DIR:~/.llama/distributions/ollama}/trace_store.db
   tool_runtime:
     - provider_id: rag-runtime
